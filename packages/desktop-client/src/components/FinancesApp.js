@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { cloneElement, Fragment, useEffect, useMemo } from 'react';
 import { DndProvider } from 'react-dnd';
 import Backend from 'react-dnd-html5-backend';
 import { connect } from 'react-redux';
@@ -10,6 +10,7 @@ import {
   useNavigate,
   BrowserRouter,
   useParams,
+  useMatch,
 } from 'react-router-dom';
 
 import hotkeys from 'hotkeys-js';
@@ -63,95 +64,109 @@ function NarrowNotSupported({ children, redirectTo = '/budget' }) {
   return isNarrowWidth ? null : children;
 }
 
+// Always rendered, either visible or hidden, whether they match the route or not
+function PageRoute({ children, path }) {
+  const match = useMatch(path);
+  return (
+    <View
+      style={{
+        flex: 1,
+        display: match ? 'flex' : 'none',
+      }}
+    >
+      {cloneElement(children, match)}
+    </View>
+  );
+}
+
 function StackedRoutesInner({ location }) {
   const { isNarrowWidth } = useResponsive();
   return (
-    <Routes location={location}>
-      <Route path="/" element={<Navigate to="/budget" replace />} />
+    <Fragment>
+      {/* PageRoutes are not Routes, and so cannot be children of a react-router v6 <Routes> */}
+      <NarrowNotSupported>
+        <PageRoute path="/reports/*">
+          <Reports />
+        </PageRoute>
+      </NarrowNotSupported>
 
-      <Route
-        path="/reports/*"
-        element={
-          <NarrowNotSupported>
-            <Reports />
-          </NarrowNotSupported>
-        }
-      />
+      <PageRoute path="/budget">
+        {isNarrowWidth ? <MobileBudget /> : <Budget />}
+      </PageRoute>
 
-      <Route
-        path="/budget"
-        element={isNarrowWidth ? <MobileBudget /> : <Budget />}
-      />
+      <Routes location={location}>
+        <Route path="/" element={<Navigate to="/budget" replace />} />
 
-      <Route
-        path="/schedules"
-        element={
-          <NarrowNotSupported>
-            <Schedules />
-          </NarrowNotSupported>
-        }
-      />
+        <Route
+          path="/schedules"
+          element={
+            <NarrowNotSupported>
+              <Schedules />
+            </NarrowNotSupported>
+          }
+        />
 
-      <Route
-        path="/schedule/edit"
-        element={
-          <NarrowNotSupported>
-            <EditSchedule />
-          </NarrowNotSupported>
-        }
-      />
-      <Route
-        path="/schedule/edit/:id"
-        element={
-          <NarrowNotSupported>
-            <EditSchedule />
-          </NarrowNotSupported>
-        }
-      />
-      <Route
-        path="/schedule/link"
-        element={
-          <NarrowNotSupported>
-            <LinkSchedule />
-          </NarrowNotSupported>
-        }
-      />
-      <Route
-        path="/schedule/discover"
-        element={
-          <NarrowNotSupported>
-            <DiscoverSchedules />
-          </NarrowNotSupported>
-        }
-      />
+        <Route
+          path="/schedule/edit"
+          element={
+            <NarrowNotSupported>
+              <EditSchedule />
+            </NarrowNotSupported>
+          }
+        />
+        <Route
+          path="/schedule/edit/:id"
+          element={
+            <NarrowNotSupported>
+              <EditSchedule />
+            </NarrowNotSupported>
+          }
+        />
+        <Route
+          path="/schedule/link"
+          element={
+            <NarrowNotSupported>
+              <LinkSchedule />
+            </NarrowNotSupported>
+          }
+        />
+        <Route
+          path="/schedule/discover"
+          element={
+            <NarrowNotSupported>
+              <DiscoverSchedules />
+            </NarrowNotSupported>
+          }
+        />
 
-      <Route
-        path="/schedule/posts-offline-notification"
-        element={<PostsOfflineNotification />}
-      />
+        <Route
+          path="/schedule/posts-offline-notification"
+          element={<PostsOfflineNotification />}
+        />
 
-      <Route path="/payees" element={<ManagePayeesPage />} />
-      <Route path="/rules" element={<ManageRulesPage />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route
-        path="/nordigen/link"
-        element={
-          <NarrowNotSupported>
-            <NordigenLink />
-          </NarrowNotSupported>
-        }
-      />
+        <Route path="/payees" element={<ManagePayeesPage />} />
+        <Route path="/rules" element={<ManageRulesPage />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route
+          path="/nordigen/link"
+          element={
+            <NarrowNotSupported>
+              <NordigenLink />
+            </NarrowNotSupported>
+          }
+        />
 
-      <Route
-        path="/accounts/:id"
-        element={<AccountCmp isNarrowWidth={isNarrowWidth} />}
-      />
+        <Route
+          path="/accounts/:id"
+          element={<AccountCmp isNarrowWidth={isNarrowWidth} />}
+        />
 
-      <Route
-        path="/accounts"
-        element={isNarrowWidth ? <MobileAccounts /> : <Account />}
-      />
-    </Routes>
+        <Route
+          path="/accounts"
+          element={isNarrowWidth ? <MobileAccounts /> : <Account />}
+        />
+      </Routes>
+    </Fragment>
   );
 }
 
