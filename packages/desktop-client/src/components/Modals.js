@@ -27,6 +27,10 @@ import NordigenExternalMsg from './modals/NordigenExternalMsg';
 import NordigenInitialise from './modals/NordigenInitialise';
 import PlaidExternalMsg from './modals/PlaidExternalMsg';
 import SelectLinkedAccounts from './modals/SelectLinkedAccounts';
+import ScheduleDetails from './schedules/EditSchedule';
+import ScheduleLink from './schedules/LinkSchedule';
+import DiscoverSchedules from './schedules/DiscoverSchedules';
+import PostsOfflineNotification from './schedules/PostsOfflineNotification';
 
 function Modals({
   modalStack,
@@ -233,6 +237,33 @@ function Modals({
               actions={actions}
               isGoalTemplatesEnabled={isGoalTemplatesEnabled}
             />
+          );
+
+        case 'schedule-edit':
+          return (
+            <ScheduleDetails
+              key={name}
+              modalProps={modalProps}
+              id={options.id || null}
+              initialFields={options.initialFields}
+            />
+          );
+
+        case 'schedule-link':
+          return (
+            <ScheduleLink
+              key={name}
+              modalProps={modalProps}
+              transactionIds={options.transactionIds}
+            />
+          );
+
+        case 'schedules-discover':
+          return <DiscoverSchedules key={name} modalProps={modalProps} />;
+
+        case 'schedule-posts-offline-notification':
+          return (
+            <PostsOfflineNotification key={name} modalProps={modalProps} />
           );
 
         default:

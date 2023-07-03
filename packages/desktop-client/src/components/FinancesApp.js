@@ -32,7 +32,7 @@ import PiggyBank from '../icons/v1/PiggyBank';
 import Wallet from '../icons/v1/Wallet';
 import { useResponsive } from '../ResponsiveProvider';
 import { colors, styles } from '../style';
-import { ExposeNavigate, StackedRoutes } from '../util/router-tools';
+import { ExposeNavigate } from '../util/router-tools';
 import { getIsOutdated, getLatestVersion } from '../util/versions';
 
 import Account from './accounts/Account';
@@ -52,10 +52,6 @@ import Notifications from './Notifications';
 import { ManagePayeesPage } from './payees/ManagePayeesPage';
 import Reports from './reports';
 import Schedules from './schedules';
-import DiscoverSchedules from './schedules/DiscoverSchedules';
-import EditSchedule from './schedules/EditSchedule';
-import LinkSchedule from './schedules/LinkSchedule';
-import PostsOfflineNotification from './schedules/PostsOfflineNotification';
 import Settings from './settings';
 import Titlebar, { TitlebarProvider } from './Titlebar';
 
@@ -70,10 +66,10 @@ function NarrowNotSupported({ children, redirectTo = '/budget' }) {
   return isNarrowWidth ? null : children;
 }
 
-function StackedRoutesInner({ location }) {
+function StackedRoutesInner() {
   const { isNarrowWidth } = useResponsive();
   return (
-    <Routes location={location}>
+    <Routes>
       <Route path="/" element={<Navigate to="/budget" replace />} />
 
       <Route
@@ -97,44 +93,6 @@ function StackedRoutesInner({ location }) {
             <Schedules />
           </NarrowNotSupported>
         }
-      />
-
-      <Route
-        path="/schedule/edit"
-        element={
-          <NarrowNotSupported>
-            <EditSchedule />
-          </NarrowNotSupported>
-        }
-      />
-      <Route
-        path="/schedule/edit/:id"
-        element={
-          <NarrowNotSupported>
-            <EditSchedule />
-          </NarrowNotSupported>
-        }
-      />
-      <Route
-        path="/schedule/link"
-        element={
-          <NarrowNotSupported>
-            <LinkSchedule />
-          </NarrowNotSupported>
-        }
-      />
-      <Route
-        path="/schedule/discover"
-        element={
-          <NarrowNotSupported>
-            <DiscoverSchedules />
-          </NarrowNotSupported>
-        }
-      />
-
-      <Route
-        path="/schedule/posts-offline-notification"
-        element={<PostsOfflineNotification />}
       />
 
       <Route path="/payees" element={<ManagePayeesPage />} />
@@ -247,6 +205,8 @@ function FinancesApp(props) {
     }, 100);
   }, []);
 
+  const { isNarrowWidth } = useResponsive();
+
   return (
     <BrowserRouter>
       <RouterBehaviors getAccounts={props.getAccounts} />
@@ -285,9 +245,9 @@ function FinancesApp(props) {
             >
               <Notifications />
               <BankSyncStatus />
-              <StackedRoutes
-                render={location => <StackedRoutesInner location={location} />}
-              />
+
+              <StackedRoutesInner />
+
               <Modals />
             </div>
 
