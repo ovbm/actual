@@ -66,60 +66,6 @@ function NarrowNotSupported({ children, redirectTo = '/budget' }) {
   return isNarrowWidth ? null : children;
 }
 
-function StackedRoutesInner() {
-  const { isNarrowWidth } = useResponsive();
-  return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/budget" replace />} />
-
-      <Route
-        path="/reports/*"
-        element={
-          <NarrowNotSupported>
-            <Reports />
-          </NarrowNotSupported>
-        }
-      />
-
-      <Route
-        path="/budget"
-        element={isNarrowWidth ? <MobileBudget /> : <Budget />}
-      />
-
-      <Route
-        path="/schedules"
-        element={
-          <NarrowNotSupported>
-            <Schedules />
-          </NarrowNotSupported>
-        }
-      />
-
-      <Route path="/payees" element={<ManagePayeesPage />} />
-      <Route path="/rules" element={<ManageRulesPage />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route
-        path="/nordigen/link"
-        element={
-          <NarrowNotSupported>
-            <NordigenLink />
-          </NarrowNotSupported>
-        }
-      />
-
-      <Route
-        path="/accounts/:id"
-        element={isNarrowWidth ? <MobileAccount /> : <Account />}
-      />
-
-      <Route
-        path="/accounts"
-        element={isNarrowWidth ? <MobileAccounts /> : <Account />}
-      />
-    </Routes>
-  );
-}
-
 function NavTab({ icon: TabIcon, name, path }) {
   return (
     <NavLink
@@ -246,7 +192,54 @@ function FinancesApp(props) {
               <Notifications />
               <BankSyncStatus />
 
-              <StackedRoutesInner />
+              <Routes>
+                <Route path="/" element={<Navigate to="/budget" replace />} />
+
+                <Route
+                  path="/reports/*"
+                  element={
+                    <NarrowNotSupported>
+                      <Reports />
+                    </NarrowNotSupported>
+                  }
+                />
+
+                <Route
+                  path="/budget"
+                  element={isNarrowWidth ? <MobileBudget /> : <Budget />}
+                />
+
+                <Route
+                  path="/schedules"
+                  element={
+                    <NarrowNotSupported>
+                      <Schedules />
+                    </NarrowNotSupported>
+                  }
+                />
+
+                <Route path="/payees" element={<ManagePayeesPage />} />
+                <Route path="/rules" element={<ManageRulesPage />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route
+                  path="/nordigen/link"
+                  element={
+                    <NarrowNotSupported>
+                      <NordigenLink />
+                    </NarrowNotSupported>
+                  }
+                />
+
+                <Route
+                  path="/accounts/:id"
+                  element={isNarrowWidth ? <MobileAccount /> : <Account />}
+                />
+
+                <Route
+                  path="/accounts"
+                  element={isNarrowWidth ? <MobileAccounts /> : <Account />}
+                />
+              </Routes>
 
               <Modals />
             </div>
