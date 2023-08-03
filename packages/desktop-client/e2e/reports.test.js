@@ -27,9 +27,9 @@ test.describe('Reports', () => {
     await reportsPage.waitToLoad();
   });
 
-  test('loads net worth and cash flow reports', async () => {
+  test('loads all reports', async () => {
     const reports = await reportsPage.getAvailableReportList();
 
-    expect(reports).toEqual(['Net Worth', 'Cash Flow']);
+    expect(reports).toEqual(['Net Worth', 'Cash Flow', 'Spending']);
   });
 });
